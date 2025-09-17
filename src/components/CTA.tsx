@@ -12,7 +12,7 @@ const CTA = () => {
         </h2>
         
         <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-          Únete a miles de personas que ya han mejorado su salud y bienestar con FitFood Online
+          Comienza tu transformación hacia una vida más saludable con FitFood Online
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
