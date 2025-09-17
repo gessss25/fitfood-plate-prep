@@ -44,9 +44,9 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Contacto</h4>
             <div className="space-y-2 text-primary-foreground/80">
               <p>📧 hola@fitfoodonline.com</p>
-              <p>📱 +34 900 123 456</p>
-              <p>📍 Madrid, España</p>
-              <p>🕐 Lun-Vie: 9:00 - 18:00</p>
+              <p>📱 +57 300 123 4567</p>
+              <p>📍 Valledupar, Colombia</p>
+              <p>🕐 Lun-Vie: 8:00 - 17:00</p>
             </div>
           </div>
         </div>
