@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-healthy-food.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
       <div 
@@ -32,6 +34,7 @@ const Hero = () => {
             variant="outline" 
             size="lg" 
             className="px-6 py-3 text-base"
+            onClick={() => navigate('/menu-del-dia')}
           >
             Ver Menú del Día
           </Button>
