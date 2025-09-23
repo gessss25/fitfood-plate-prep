@@ -6,7 +6,7 @@ const FeaturedPlans = () => {
   const plans = [
     {
       name: "Plan Básico",
-      price: "$89.000",
+      price: "$65.000",
       period: "/mes",
       description: "Perfecto para empezar tu journey saludable",
       features: [
@@ -20,7 +20,7 @@ const FeaturedPlans = () => {
     },
     {
       name: "Plan Premium",
-      price: "$149.000", 
+      price: "$119.000", 
       period: "/mes",
       description: "La opción más completa para resultados óptimos",
       features: [
@@ -29,14 +29,14 @@ const FeaturedPlans = () => {
         "Consultas con nutricionista",
         "Delivery 2 veces/semana",
         "App móvil premium",
-        "Seguimiento de progreso"
+        "Fisioterapeutas deportivos"
       ],
       popular: true,
       color: "bg-gradient-primary"
     },
     {
       name: "Plan Familiar",
-      price: "$249.000",
+      price: "$199.000",
       period: "/mes", 
       description: "Alimentación saludable para toda la familia",
       features: [

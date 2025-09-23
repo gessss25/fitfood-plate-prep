@@ -35,9 +35,9 @@ const Hero = () => {
             variant="outline" 
             size="lg" 
             className="px-6 py-3 text-base"
-            onClick={() => navigate('/menu-del-dia')}
+            onClick={() => navigate('/service-details')}
           >
-            Ver Menú del Día
+            Explorar Nuestros Servicios
           </Button>
         </div>
       </div>

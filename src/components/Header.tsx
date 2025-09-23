@@ -34,7 +34,7 @@ const Header = () => {
         
         <nav className="hidden md:flex items-center space-x-6">
           <a href="/#planes" className="text-foreground hover:text-primary transition-colors">Planes</a>
-          <a href="/services" className="text-foreground hover:text-primary transition-colors">Servicios</a>
+          <a href="/service-details" className="text-foreground hover:text-primary transition-colors">Servicios</a>
           <a href="/menu-del-dia" className="text-foreground hover:text-primary transition-colors">Menú del Día</a>
           <a href="#contacto" className="text-foreground hover:text-primary transition-colors">Contacto</a>
         </nav>

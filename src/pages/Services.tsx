@@ -12,8 +12,8 @@ const Services = () => {
     {
       id: "basico",
       name: "Plan Básico",
-      price: 89000,
-      originalPrice: 120000,
+      price: 65000,
+      originalPrice: 89000,
       period: "/mes",
       description: "Ideal para empezar tu transformación saludable",
       features: [
@@ -26,13 +26,13 @@ const Services = () => {
       ],
       popular: false,
       color: "bg-card",
-      savings: "Ahorra $31.000"
+      savings: "Ahorra $24.000"
     },
     {
       id: "premium",
       name: "Plan Premium",
-      price: 149000,
-      originalPrice: 200000,
+      price: 119000,
+      originalPrice: 149000,
       period: "/mes",
       description: "La opción más completa para resultados óptimos",
       features: [
@@ -43,17 +43,18 @@ const Services = () => {
         "App móvil premium con tracking",
         "Seguimiento de progreso detallado",
         "Plan de ejercicios personalizado",
+        "Acceso a fisioterapeutas deportivos",
         "Acceso a comunidad exclusiva"
       ],
       popular: true,
       color: "bg-gradient-primary",
-      savings: "Ahorra $51.000"
+      savings: "Ahorra $30.000"
     },
     {
       id: "familiar", 
       name: "Plan Familiar",
-      price: 249000,
-      originalPrice: 320000,
+      price: 199000,
+      originalPrice: 249000,
       period: "/mes",
       description: "Alimentación saludable para toda la familia",
       features: [
@@ -68,7 +69,7 @@ const Services = () => {
       ],
       popular: false,
       color: "bg-card",
-      savings: "Ahorra $71.000"
+      savings: "Ahorra $50.000"
     }
   ];
 
@@ -163,9 +164,15 @@ const Services = () => {
                         ? 'bg-gradient-primary hover:opacity-90' 
                         : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
                     }`}
-                    onClick={() => navigate(`/plan-details/${plan.id}`)}
+                    onClick={() => {
+                      if (plan.id === "premium") {
+                        navigate('/fisioterapia');
+                      } else {
+                        navigate(`/plan-details/${plan.id}`);
+                      }
+                    }}
                   >
-                    {plan.popular ? 'Empezar Ahora' : 'Seleccionar Plan'}
+                    {plan.popular ? 'Ver Fisioterapeutas' : 'Seleccionar Plan'}
                   </Button>
                   
                   <Button 
