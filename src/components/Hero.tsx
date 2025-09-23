@@ -26,7 +26,8 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <Button 
             size="lg" 
-            className="px-6 py-3 text-base"
+            className="px-6 py-3 text-base bg-gradient-primary hover:opacity-90"
+            onClick={() => navigate('/services')}
           >
             Explorar Planes
           </Button>

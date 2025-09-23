@@ -168,9 +168,9 @@ const DailyMenu = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {menuItems[selectedCategory as keyof typeof menuItems].map((item, index) => (
-            <Card key={index} className="hover:shadow-medium transition-all duration-300 hover:-translate-y-1">
+            <Card key={index} className="hover:shadow-medium transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
               <CardHeader className="text-center">
-                <div className="text-4xl mb-2">{item.image}</div>
+                <div className="text-4xl mb-2 group-hover:scale-110 transition-transform duration-300">{item.image}</div>
                 <CardTitle className="text-xl text-primary">{item.name}</CardTitle>
               </CardHeader>
               
@@ -188,7 +188,10 @@ const DailyMenu = () => {
                   <span className="text-2xl font-bold text-primary">
                     {formatPrice(item.price)}
                   </span>
-                  <Button size="sm" className="bg-gradient-primary">
+                  <Button 
+                    size="sm" 
+                    className="bg-gradient-primary hover:scale-105 transition-transform duration-200"
+                  >
                     Agregar
                   </Button>
                 </div>

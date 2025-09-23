@@ -6,7 +6,7 @@ const FeaturedPlans = () => {
   const plans = [
     {
       name: "Plan Básico",
-      price: "$120.000",
+      price: "$89.000",
       period: "/mes",
       description: "Perfecto para empezar tu journey saludable",
       features: [
@@ -20,7 +20,7 @@ const FeaturedPlans = () => {
     },
     {
       name: "Plan Premium",
-      price: "$200.000", 
+      price: "$149.000", 
       period: "/mes",
       description: "La opción más completa para resultados óptimos",
       features: [
@@ -36,7 +36,7 @@ const FeaturedPlans = () => {
     },
     {
       name: "Plan Familiar",
-      price: "$320.000",
+      price: "$249.000",
       period: "/mes", 
       description: "Alimentación saludable para toda la familia",
       features: [

@@ -66,7 +66,10 @@ const Services = () => {
                   ))}
                 </ul>
                 
-                <Button className="w-full bg-gradient-primary hover:opacity-90">
+                <Button 
+                  className="w-full bg-gradient-primary hover:opacity-90"
+                  onClick={() => window.location.href = '/services'}
+                >
                   Conocer Más
                 </Button>
               </CardContent>
