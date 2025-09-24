@@ -34,6 +34,14 @@ const Hero = () => {
           <Button 
             variant="outline" 
             size="lg" 
+            className="px-6 py-3 text-base border-accent text-accent hover:bg-accent hover:text-white"
+            onClick={() => navigate('/demo')}
+          >
+            🎯 Prueba Demo Gratis
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg" 
             className="px-6 py-3 text-base"
             onClick={() => navigate('/service-details')}
           >
