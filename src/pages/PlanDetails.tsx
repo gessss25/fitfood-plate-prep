@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Check, Clock, Users, Utensils, MapPin } from "lucide-react";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const PlanDetails = () => {
   const { planId } = useParams();
@@ -311,10 +312,17 @@ const PlanDetails = () => {
             </Tabs>
 
             <div className="mt-8 space-y-4">
-              <Button className="w-full bg-gradient-primary text-lg py-6">
+              <Button 
+                className="w-full bg-gradient-primary text-lg py-6"
+                onClick={() => openWhatsApp(`Hola! Quiero empezar con el ${currentPlan.name} (${formatPrice(currentPlan.price)}/mes). ¿Cómo puedo inscribirme?`)}
+              >
                 Empezar con {currentPlan.name}
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => openWhatsApp(`Hola! Me gustaría recibir una consulta personalizada gratuita sobre el ${currentPlan.name}.`)}
+              >
                 Consulta Personalizada Gratis
               </Button>
             </div>

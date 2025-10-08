@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, Users, Utensils, Truck, Calendar, Heart } from "lucide-react";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const ServiceDetails = () => {
   const navigate = useNavigate();
@@ -154,10 +155,17 @@ const ServiceDetails = () => {
               Nuestro equipo de expertos está disponible para guiarte hacia el servicio que mejor se adapte a tus necesidades específicas
             </p>
             <div className="space-y-3 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto">
+              <Button 
+                className="bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto"
+                onClick={() => openWhatsApp('Hola! Me gustaría agendar una consulta gratuita para conocer más sobre sus servicios.')}
+              >
                 Consulta Gratuita
               </Button>
-              <Button variant="outline" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                className="w-full sm:w-auto"
+                onClick={() => openWhatsApp('Hola! Necesito ayuda para elegir el servicio adecuado. ¿Pueden asesorarme?')}
+              >
                 Contactar Asesor
               </Button>
             </div>

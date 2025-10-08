@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const CTA = () => {
   return (
@@ -19,6 +20,7 @@ const CTA = () => {
           <Button 
             size="lg" 
             className="bg-accent hover:bg-accent/90 text-accent-foreground px-10 py-6 text-lg font-semibold shadow-strong"
+            onClick={() => openWhatsApp('Hola! Me gustaría empezar mi prueba gratuita con FitFood Online. ¿Cómo funciona?')}
           >
             Empezar Prueba Gratuita
           </Button>
@@ -26,6 +28,7 @@ const CTA = () => {
             variant="outline" 
             size="lg" 
             className="border-white text-white hover:bg-white hover:text-primary px-10 py-6 text-lg"
+            onClick={() => openWhatsApp('Hola! Me gustaría hablar con un experto en nutrición para conocer más sobre los servicios.')}
           >
             Hablar con Experto
           </Button>

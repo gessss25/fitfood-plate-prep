@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check } from "lucide-react";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -193,7 +194,10 @@ const Services = () => {
           <p className="text-muted-foreground mb-6">
             Nuestro equipo de nutricionistas te ayudará a encontrar el plan perfecto para tus objetivos
           </p>
-          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
+          <Button 
+            className="bg-accent hover:bg-accent/90 text-accent-foreground"
+            onClick={() => openWhatsApp('Hola! Tengo dudas sobre qué plan elegir. ¿Pueden ayudarme con una consulta gratuita?')}
+          >
             Consulta Gratuita
           </Button>
         </div>

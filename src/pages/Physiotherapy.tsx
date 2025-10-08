@@ -7,9 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Award, Clock, MessageCircle, Calendar, Shield } from "lucide-react";
 import { useState } from "react";
+import { openWhatsApp } from "@/lib/whatsapp";
+import { useToast } from "@/hooks/use-toast";
 
 const Physiotherapy = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -50,8 +53,29 @@ const Physiotherapy = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Consulta enviada:', formData);
-    // Aquí implementarías la lógica para enviar la consulta
+    
+    const urgencyText = {
+      normal: 'Normal (24-48 horas)',
+      urgent: 'Urgente (Mismo día)',
+      emergency: 'Emergencia (Inmediato)'
+    }[formData.urgency];
+    
+    const message = `Hola! Solicito consulta de fisioterapia deportiva:
+
+*Nombre:* ${formData.name}
+*Email:* ${formData.email}
+*Teléfono:* ${formData.phone}
+*Urgencia:* ${urgencyText}
+
+*Descripción de la situación:*
+${formData.issue}`;
+
+    openWhatsApp(message);
+    
+    toast({
+      title: "Redirigiendo a WhatsApp",
+      description: "Te conectaremos con nuestro equipo de fisioterapeutas",
+    });
   };
 
   return (

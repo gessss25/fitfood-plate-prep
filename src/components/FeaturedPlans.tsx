@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const FeaturedPlans = () => {
   const plans = [
@@ -105,6 +106,7 @@ const FeaturedPlans = () => {
                       ? 'bg-gradient-primary hover:opacity-90' 
                       : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
                   }`}
+                  onClick={() => openWhatsApp(`Hola! Me interesa el ${plan.name} (${plan.price}${plan.period}). Me gustaría recibir más información.`)}
                 >
                   {plan.popular ? 'Empezar Ahora' : 'Seleccionar Plan'}
                 </Button>

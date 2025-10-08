@@ -9,6 +9,7 @@ import { ArrowLeft, Calendar, Clock, Users, Star, Play, Gift } from "lucide-reac
 import { useToast } from "@/hooks/use-toast";
 import mealPlanImage from "@/assets/meal-plan.jpg";
 import recipesImage from "@/assets/recipes.jpg";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const Demo = () => {
   const navigate = useNavigate();
@@ -116,10 +117,7 @@ const Demo = () => {
       return;
     }
 
-    toast({
-      title: `${feature} Disponible`,
-      description: `Tienes ${daysRemaining} días restantes de tu prueba gratis`,
-    });
+    openWhatsApp(`Hola! Tengo la prueba gratis activa y me interesa: ${feature}. ¿Me pueden ayudar?`);
   };
 
   return (
