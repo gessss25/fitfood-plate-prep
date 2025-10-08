@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Users, Star, Play } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Users, Star, Play, Gift } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import mealPlanImage from "@/assets/meal-plan.jpg";
 import recipesImage from "@/assets/recipes.jpg";
@@ -14,6 +14,22 @@ const Demo = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeDay, setActiveDay] = useState("dia1");
+  const [daysRemaining, setDaysRemaining] = useState<number>(7);
+  const [trialActive, setTrialActive] = useState<boolean>(false);
+
+  useEffect(() => {
+    const trialStartDate = localStorage.getItem('trialStartDate');
+    
+    if (trialStartDate) {
+      const startDate = new Date(trialStartDate);
+      const currentDate = new Date();
+      const daysPassed = Math.floor((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const remaining = Math.max(0, 7 - daysPassed);
+      
+      setDaysRemaining(remaining);
+      setTrialActive(remaining > 0);
+    }
+  }, []);
 
   const demoMenus = {
     dia1: {
@@ -78,19 +94,32 @@ const Demo = () => {
     }
   };
 
-  const handleStartDemo = (feature: string) => {
+  const startFreeTrial = () => {
+    const startDate = new Date().toISOString();
+    localStorage.setItem('trialStartDate', startDate);
+    setDaysRemaining(7);
+    setTrialActive(true);
+    
     toast({
-      title: "🎉 Demo Activado",
-      description: `Probando ${feature}. En la versión completa tendrás acceso ilimitado.`,
+      title: "¡Prueba Gratis Activada! 🎉",
+      description: "Tienes 7 días de acceso completo a todos nuestros servicios",
     });
   };
 
-  const handleUpgrade = () => {
+  const handleFeatureClick = (feature: string) => {
+    if (!trialActive) {
+      toast({
+        title: "Activa tu prueba gratis",
+        description: "Inicia tu prueba de 7 días para acceder a todas las funciones",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
-      title: "🚀 ¡Únete Ahora!",
-      description: "Accede a todos los planes y funcionalidades completas.",
+      title: `${feature} Disponible`,
+      description: `Tienes ${daysRemaining} días restantes de tu prueba gratis`,
     });
-    navigate('/services');
   };
 
   return (
@@ -108,29 +137,54 @@ const Demo = () => {
             Volver al Inicio
           </Button>
           
-          <Badge className="mb-4 bg-accent text-accent-foreground">
-            <Play className="w-4 h-4 mr-2" />
-            Modo Demo Gratuito
-          </Badge>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-            prueba nuestros servicios
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Experimenta cómo funciona nuestro sistema de alimentación saludable con esta demo gratuita de 3 días
-          </p>
+          {!trialActive ? (
+            <>
+              <Badge className="mb-4 bg-gradient-primary text-white">
+                <Gift className="w-4 h-4 mr-2" />
+                Prueba Gratis por 7 Días
+              </Badge>
+              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+                Acceso Completo Sin Costo
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+                Experimenta todos nuestros servicios durante 7 días sin compromiso
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-gradient-primary hover:opacity-90"
+                onClick={startFreeTrial}
+              >
+                <Gift className="w-5 h-5 mr-2" />
+                Activar Prueba Gratis
+              </Button>
+            </>
+          ) : (
+            <>
+              <Badge className="mb-4 bg-green-600 text-white">
+                <Clock className="w-4 h-4 mr-2" />
+                {daysRemaining} días restantes
+              </Badge>
+              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+                Tu Prueba Gratis Está Activa
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Acceso completo a todos los servicios - Quedan {daysRemaining} días
+              </p>
+            </>
+          )}
         </div>
 
-        <Tabs defaultValue="menu" className="max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="menu">Menú Demo</TabsTrigger>
-            <TabsTrigger value="recetas">Recetas</TabsTrigger>
-            <TabsTrigger value="consulta">Consulta Demo</TabsTrigger>
-          </TabsList>
+        {trialActive && (
+          <Tabs defaultValue="menu" className="max-w-6xl mx-auto">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="menu">Plan de Alimentación</TabsTrigger>
+              <TabsTrigger value="recetas">Biblioteca de Recetas</TabsTrigger>
+              <TabsTrigger value="consulta">Consulta Nutricionista</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="menu" className="mt-8">
-            <div className="mb-6">
-              <h3 className="text-2xl font-bold text-center mb-4">Menú de 3 Días - Muestra</h3>
+            <TabsContent value="menu" className="mt-8">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-center mb-4">Tu Plan de Alimentación Completo</h3>
               <div className="flex justify-center gap-2 mb-6">
                 {Object.keys(demoMenus).map((day, index) => (
                   <Button
@@ -174,8 +228,7 @@ const Demo = () => {
                       </div>
                       <Button 
                         className="w-full mt-4" 
-                        variant="outline"
-                        onClick={() => handleStartDemo(`receta de ${details.name}`)}
+                        onClick={() => handleFeatureClick(`Receta de ${details.name}`)}
                       >
                         Ver Receta Completa
                       </Button>
@@ -185,15 +238,12 @@ const Demo = () => {
               ))}
             </div>
 
-            <div className="text-center mt-8 p-6 bg-accent/10 rounded-lg">
-              <p className="text-accent font-semibold mb-3">
-                🎯 En la versión completa obtienes menús personalizados para 30 días
-              </p>
-              <Button onClick={handleUpgrade} className="bg-gradient-primary">
-                Acceder a Menús Completos
-              </Button>
-            </div>
-          </TabsContent>
+              <div className="text-center mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p className="text-green-700 dark:text-green-400 font-semibold mb-3">
+                  ✨ Acceso completo durante tu prueba de {daysRemaining} días - Menús personalizados, seguimiento nutricional y más
+                </p>
+              </div>
+            </TabsContent>
 
           <TabsContent value="recetas" className="mt-8">
             <div className="grid md:grid-cols-2 gap-8">
@@ -222,9 +272,9 @@ const Demo = () => {
                   </div>
                   <Button 
                     className="w-full mt-4" 
-                    onClick={() => handleStartDemo("biblioteca de recetas")}
+                    onClick={() => handleFeatureClick("Biblioteca de Recetas")}
                   >
-                    Explorar Recetas Demo
+                    Explorar Todas las Recetas
                   </Button>
                 </CardContent>
               </Card>
@@ -254,34 +304,30 @@ const Demo = () => {
                   </div>
                   <Button 
                     className="w-full mt-4" 
-                    variant="outline"
-                    onClick={() => handleStartDemo("lista de compras inteligente")}
+                    onClick={() => handleFeatureClick("Lista de Compras Inteligente")}
                   >
-                    Ver Lista Demo
+                    Generar Mi Lista
                   </Button>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="text-center mt-8 p-6 bg-accent/10 rounded-lg">
-              <p className="text-accent font-semibold mb-3">
-                📚 Versión completa incluye video-tutoriales y tips de preparación
-              </p>
-              <Button onClick={handleUpgrade} className="bg-gradient-primary">
-                Desbloquear Todas las Recetas
-              </Button>
-            </div>
-          </TabsContent>
+              <div className="text-center mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p className="text-green-700 dark:text-green-400 font-semibold">
+                  📚 Acceso completo a video-tutoriales y tips de preparación incluidos en tu prueba
+                </p>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="consulta" className="mt-8">
-            <div className="max-w-4xl mx-auto">
-              <Card>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Consulta Demo con Nutricionista</CardTitle>
-                  <p className="text-muted-foreground">
-                    Experimenta cómo funciona una consulta personalizada con nuestros expertos
-                  </p>
-                </CardHeader>
+            <TabsContent value="consulta" className="mt-8">
+              <div className="max-w-4xl mx-auto">
+                <Card>
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">Consulta con Nutricionista Profesional</CardTitle>
+                    <p className="text-muted-foreground">
+                      Acceso completo a consultas personalizadas con nuestros expertos en nutrición
+                    </p>
+                  </CardHeader>
                 <CardContent className="p-8">
                   <div className="bg-accent/5 p-6 rounded-lg mb-6">
                     <h3 className="font-bold text-lg mb-4">👩‍⚕️ Dra. María González - Nutricionista</h3>
@@ -350,37 +396,53 @@ const Demo = () => {
                   
                   <div className="text-center mt-8">
                     <Button 
-                      onClick={() => handleStartDemo("consulta con nutricionista")}
-                      className="mr-4"
-                      variant="outline"
+                      onClick={() => handleFeatureClick("Consulta con Nutricionista")}
+                      className="bg-gradient-primary"
                     >
-                      Continuar Demo
-                    </Button>
-                    <Button onClick={handleUpgrade} className="bg-gradient-primary">
-                      Obtener Consultas Reales
+                      Agendar Mi Consulta
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        )}
 
-        <div className="text-center mt-16 p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl">
-          <h3 className="text-2xl font-bold text-primary mb-4">¿Listo para la Experiencia Completa?</h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Esta es solo una pequeña muestra. Con nuestros planes completos obtienes menús personalizados ilimitados, 
-            consultas reales con nutricionistas y seguimiento completo de tu progreso.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button onClick={handleUpgrade} className="bg-gradient-primary px-8">
-              Ver Todos los Planes
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/service-details')}>
-              Conocer Más Servicios
+        {!trialActive && (
+          <div className="text-center mt-8 p-12 bg-muted rounded-2xl">
+            <Gift className="w-16 h-16 text-primary mx-auto mb-4" />
+            <h3 className="text-2xl font-bold mb-4">Inicia tu Prueba Gratis de 7 Días</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              Activa tu prueba ahora para acceder a todas las funcionalidades sin costo ni compromiso
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-gradient-primary hover:opacity-90"
+              onClick={startFreeTrial}
+            >
+              <Gift className="w-5 h-5 mr-2" />
+              Activar Prueba Gratis
             </Button>
           </div>
-        </div>
+        )}
+
+        {trialActive && (
+          <div className="text-center mt-16 p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl">
+            <h3 className="text-2xl font-bold text-primary mb-4">¿Te está gustando?</h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Tienes {daysRemaining} días restantes de tu prueba gratis. Después, puedes elegir el plan que mejor se adapte a tus necesidades.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button onClick={() => navigate('/services')} className="bg-gradient-primary px-8">
+                Ver Todos los Planes
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/service-details')}>
+                Conocer Más Servicios
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
