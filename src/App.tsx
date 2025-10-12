@@ -10,6 +10,8 @@ import ServiceDetails from "./pages/ServiceDetails";
 import Physiotherapy from "./pages/Physiotherapy";
 import PlanDetails from "./pages/PlanDetails";
 import Demo from "./pages/Demo";
+import Auth from "./pages/Auth";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/fisioterapia" element={<Physiotherapy />} />
           <Route path="/plan-details/:planId" element={<PlanDetails />} />
           <Route path="/demo" element={<Demo />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

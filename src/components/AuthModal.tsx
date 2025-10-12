@@ -22,15 +22,21 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     setLoading(true);
     try {
       if (type === 'signup') {
+        const redirectUrl = `${window.location.origin}/`;
+        
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: redirectUrl,
+          },
         });
         if (error) throw error;
         toast({
           title: "¡Cuenta creada!",
-          description: "Revisa tu email para confirmar tu cuenta.",
+          description: "Bienvenido a FitFood Online.",
         });
+        onOpenChange(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,

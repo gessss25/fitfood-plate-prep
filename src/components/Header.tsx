@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 import AuthModal from "./AuthModal";
 import { User } from "@supabase/supabase-js";
+import { Shield } from "lucide-react";
 
 const Header = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isAdmin } = useUserRole();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -43,6 +47,18 @@ const Header = () => {
           {user ? (
             <div className="flex items-center space-x-2">
               <span className="text-sm">Hola, {user.email?.split('@')[0]}</span>
+              {isAdmin && (
+                <Link to="/admin">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="gap-2"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
               <Button 
                 variant="ghost" 
                 size="sm"
