@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Users, Star, Play, Gift } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Users, Star, Play, Gift, TrendingUp, Activity, Apple, Target, ChefHat, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Progress } from "@/components/ui/progress";
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import mealPlanImage from "@/assets/meal-plan.jpg";
 import recipesImage from "@/assets/recipes.jpg";
 import { openWhatsApp } from "@/lib/whatsapp";
@@ -14,9 +17,12 @@ import { openWhatsApp } from "@/lib/whatsapp";
 const Demo = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [activeDay, setActiveDay] = useState("dia1");
+  const [activeDay, setActiveDay] = useState(0);
   const [daysRemaining, setDaysRemaining] = useState<number>(7);
   const [trialActive, setTrialActive] = useState<boolean>(false);
+  const [mealPlans, setMealPlans] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const trialStartDate = localStorage.getItem('trialStartDate');
@@ -30,70 +36,59 @@ const Demo = () => {
       setDaysRemaining(remaining);
       setTrialActive(remaining > 0);
     }
+
+    fetchDemoData();
   }, []);
 
-  const demoMenus = {
-    dia1: {
-      desayuno: {
-        name: "Bowl de Avena con Frutas",
-        calories: "320 kcal",
-        ingredients: ["Avena integral", "Plátano", "Fresas", "Miel", "Nueces"],
-        time: "10 min"
-      },
-      almuerzo: {
-        name: "Pollo a la Plancha con Quinoa",
-        calories: "450 kcal", 
-        ingredients: ["Pechuga de pollo", "Quinoa", "Brócoli", "Zanahoria", "Aceite de oliva"],
-        time: "25 min"
-      },
-      cena: {
-        name: "Salmón con Vegetales",
-        calories: "380 kcal",
-        ingredients: ["Filete de salmón", "Espárragos", "Calabacín", "Limón"],
-        time: "20 min"
-      }
-    },
-    dia2: {
-      desayuno: {
-        name: "Smoothie Verde Energizante",
-        calories: "280 kcal",
-        ingredients: ["Espinaca", "Mango", "Plátano", "Leche de almendras", "Chía"],
-        time: "5 min"
-      },
-      almuerzo: {
-        name: "Ensalada de Garbanzos",
-        calories: "400 kcal",
-        ingredients: ["Garbanzos", "Tomate cherry", "Pepino", "Feta", "Aceitunas"],
-        time: "15 min"
-      },
-      cena: {
-        name: "Pescado con Arroz Integral",
-        calories: "420 kcal",
-        ingredients: ["Pescado blanco", "Arroz integral", "Pimientos", "Cebolla"],
-        time: "30 min"
-      }
-    },
-    dia3: {
-      desayuno: {
-        name: "Tostadas de Aguacate",
-        calories: "350 kcal",
-        ingredients: ["Pan integral", "Aguacate", "Tomate", "Huevo", "Semillas"],
-        time: "8 min"
-      },
-      almuerzo: {
-        name: "Lenteja con Vegetales",
-        calories: "380 kcal",
-        ingredients: ["Lentejas", "Apio", "Zanahoria", "Cebolla", "Ajo"],
-        time: "35 min"
-      },
-      cena: {
-        name: "Pavo con Batata",
-        calories: "360 kcal",
-        ingredients: ["Pechuga de pavo", "Batata", "Espinaca", "Aceite de coco"],
-        time: "25 min"
-      }
+  const fetchDemoData = async () => {
+    try {
+      const { data: plansData } = await supabase
+        .from('meal_plans')
+        .select('*')
+        .limit(3);
+
+      const { data: recipesData } = await supabase
+        .from('recipes')
+        .select('*')
+        .limit(9);
+
+      if (plansData) setMealPlans(plansData);
+      if (recipesData) setRecipes(recipesData);
+    } catch (error) {
+      console.error('Error fetching demo data:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Demo data para las funcionalidades premium
+  const progressData = [
+    { semana: 'Sem 1', peso: 75, calorias: 1850 },
+    { semana: 'Sem 2', peso: 74.2, calorias: 1820 },
+    { semana: 'Sem 3', peso: 73.5, calorias: 1800 },
+    { semana: 'Sem 4', peso: 72.8, calorias: 1780 },
+  ];
+
+  const macrosData = [
+    { name: 'Proteínas', value: 30, color: '#10b981' },
+    { name: 'Carbohidratos', value: 45, color: '#3b82f6' },
+    { name: 'Grasas', value: 25, color: '#f59e0b' },
+  ];
+
+  const weeklyCalories = [
+    { dia: 'Lun', consumo: 1850, objetivo: 1800 },
+    { dia: 'Mar', consumo: 1780, objetivo: 1800 },
+    { dia: 'Mie', consumo: 1820, objetivo: 1800 },
+    { dia: 'Jue', consumo: 1900, objetivo: 1800 },
+    { dia: 'Vie', consumo: 1750, objetivo: 1800 },
+    { dia: 'Sab', consumo: 1880, objetivo: 1800 },
+    { dia: 'Dom', consumo: 1800, objetivo: 1800 },
+  ];
+
+  const demoRecipes = recipes.slice(0, 3).map((recipe, index) => ({
+    ...recipe,
+    meal: ['Desayuno', 'Almuerzo', 'Cena'][index % 3]
+  }));
 
   const startFreeTrial = () => {
     const startDate = new Date().toISOString();
@@ -174,59 +169,239 @@ const Demo = () => {
 
         {trialActive && (
           <Tabs defaultValue="menu" className="max-w-6xl mx-auto">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="menu">Plan de Alimentación</TabsTrigger>
-              <TabsTrigger value="recetas">Biblioteca de Recetas</TabsTrigger>
-              <TabsTrigger value="consulta">Consulta Nutricionista</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 gap-2">
+              <TabsTrigger value="menu">Plan Alimentación</TabsTrigger>
+              <TabsTrigger value="progreso">Mi Progreso</TabsTrigger>
+              <TabsTrigger value="recetas">Recetas Premium</TabsTrigger>
+              <TabsTrigger value="analisis">Análisis Nutricional</TabsTrigger>
+              <TabsTrigger value="consulta">Nutricionista</TabsTrigger>
             </TabsList>
 
             <TabsContent value="menu" className="mt-8">
               <div className="mb-6">
-                <h3 className="text-2xl font-bold text-center mb-4">Tu Plan de Alimentación Completo</h3>
-              <div className="flex justify-center gap-2 mb-6">
-                {Object.keys(demoMenus).map((day, index) => (
-                  <Button
-                    key={day}
-                    variant={activeDay === day ? "default" : "outline"}
-                    onClick={() => setActiveDay(day)}
-                    className="min-w-[100px]"
-                  >
-                    Día {index + 1}
-                  </Button>
-                ))}
+                <h3 className="text-2xl font-bold text-center mb-4">Tu Plan de Alimentación Personalizado</h3>
+                <div className="flex justify-center gap-2 mb-6 flex-wrap">
+                  {[0, 1, 2, 3, 4, 5, 6].map((day) => (
+                    <Button
+                      key={day}
+                      variant={activeDay === day ? "default" : "outline"}
+                      onClick={() => setActiveDay(day)}
+                      className="min-w-[100px]"
+                    >
+                      Día {day + 1}
+                    </Button>
+                  ))}
+                </div>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">Cargando menús...</div>
+              ) : (
+                <>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {demoRecipes.map((recipe, idx) => (
+                      <Card key={recipe.id} className="hover:shadow-medium transition-all duration-300">
+                        {recipe.image_url && (
+                          <div className="h-48 bg-cover bg-center rounded-t-lg" style={{ backgroundImage: `url(${recipe.image_url})` }} />
+                        )}
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">{recipe.meal}</CardTitle>
+                            <Badge variant="outline" className="text-xs">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {recipe.prep_time} min
+                            </Badge>
+                          </div>
+                          <p className="text-xl font-bold text-primary">{recipe.title}</p>
+                          <p className="text-sm text-muted-foreground">{recipe.calories} kcal</p>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <p className="text-sm text-muted-foreground">{recipe.description}</p>
+                            {recipe.ingredients && (
+                              <div>
+                                <h4 className="font-semibold mb-2">Ingredientes:</h4>
+                                <ul className="text-sm text-muted-foreground space-y-1">
+                                  {recipe.ingredients.slice(0, 3).map((ingredient: string, idx: number) => (
+                                    <li key={idx} className="flex items-center">
+                                      <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2" />
+                                      {ingredient}
+                                    </li>
+                                  ))}
+                                  {recipe.ingredients.length > 3 && (
+                                    <li className="text-xs text-muted-foreground italic">
+                                      +{recipe.ingredients.length - 3} más...
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+                            <Button 
+                              className="w-full mt-4" 
+                              onClick={() => handleFeatureClick(`Receta de ${recipe.title}`)}
+                            >
+                              Ver Receta Completa
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  <div className="text-center mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg">
+                    <p className="text-green-700 dark:text-green-400 font-semibold mb-3">
+                      ✨ Acceso completo durante tu prueba de {daysRemaining} días - Menús personalizados para cada día
+                    </p>
+                  </div>
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="progreso" className="mt-8">
+              <div className="grid gap-6">
+                <div className="grid md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <Target className="w-4 h-4 text-accent" />
+                        Meta de Peso
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold text-primary">-2.2kg</div>
+                        <Progress value={44} className="h-2" />
+                        <p className="text-xs text-muted-foreground">44% del objetivo alcanzado</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-accent" />
+                        Calorías Promedio
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-primary">1,815</div>
+                      <p className="text-xs text-muted-foreground mt-2">Objetivo: 1,800 kcal/día</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-accent" />
+                        Días Activos
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-primary">28</div>
+                      <p className="text-xs text-muted-foreground mt-2">Racha actual: 7 días</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Evolución de Peso y Calorías</CardTitle>
+                    <CardDescription>Progreso de las últimas 4 semanas</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={progressData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="semana" />
+                        <YAxis yAxisId="left" domain={[70, 76]} />
+                        <YAxis yAxisId="right" orientation="right" domain={[1700, 1900]} />
+                        <Tooltip />
+                        <Legend />
+                        <Line yAxisId="left" type="monotone" dataKey="peso" stroke="#10b981" strokeWidth={2} name="Peso (kg)" />
+                        <Line yAxisId="right" type="monotone" dataKey="calorias" stroke="#3b82f6" strokeWidth={2} name="Calorías" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Consumo de Calorías Semanal</CardTitle>
+                    <CardDescription>Última semana comparada con tu objetivo</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={weeklyCalories}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="dia" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="consumo" fill="#10b981" name="Consumo Real" />
+                        <Bar dataKey="objetivo" fill="#cbd5e1" name="Objetivo" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg">
+                  <p className="text-blue-700 dark:text-blue-400 font-semibold">
+                    📊 Seguimiento detallado de tu progreso con actualizaciones en tiempo real
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+
+          <TabsContent value="recetas" className="mt-8">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-center mb-2">Recetas Premium Exclusivas</h3>
+              <p className="text-center text-muted-foreground">
+                Accede a nuestra colección completa de {recipes.length}+ recetas saludables
+              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
-              {Object.entries(demoMenus[activeDay as keyof typeof demoMenus]).map(([meal, details]) => (
-                <Card key={meal} className="hover:shadow-medium transition-all duration-300">
+              {recipes.slice(0, 6).map((recipe) => (
+                <Card key={recipe.id} className="overflow-hidden hover:shadow-medium transition-all duration-300">
+                  {recipe.image_url && (
+                    <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${recipe.image_url})` }} />
+                  )}
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg capitalize">{meal}</CardTitle>
-                      <Badge variant="outline" className="text-xs">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {details.time}
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="secondary">
+                        <ChefHat className="w-3 h-3 mr-1" />
+                        Premium
                       </Badge>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {recipe.prep_time} min
+                      </div>
                     </div>
-                    <p className="text-2xl font-bold text-primary">{details.name}</p>
-                    <p className="text-sm text-muted-foreground">{details.calories}</p>
+                    <CardTitle className="text-lg">{recipe.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{recipe.description}</p>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      <div>
-                        <h4 className="font-semibold mb-2">Ingredientes:</h4>
-                        <ul className="text-sm text-muted-foreground space-y-1">
-                          {details.ingredients.map((ingredient, idx) => (
-                            <li key={idx} className="flex items-center">
-                              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2" />
-                              {ingredient}
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold">Calorías:</span>
+                        <span className="text-sm text-primary font-bold">{recipe.calories} kcal</span>
                       </div>
+                      {recipe.ingredients && (
+                        <div>
+                          <span className="text-sm font-semibold">Ingredientes principales:</span>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {recipe.ingredients.slice(0, 3).map((ing: string, idx: number) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {ing}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       <Button 
-                        className="w-full mt-4" 
-                        onClick={() => handleFeatureClick(`Receta de ${details.name}`)}
+                        className="w-full" 
+                        variant="default"
+                        onClick={() => handleFeatureClick(`Receta Premium: ${recipe.title}`)}
                       >
                         Ver Receta Completa
                       </Button>
@@ -236,86 +411,249 @@ const Demo = () => {
               ))}
             </div>
 
-              <div className="text-center mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <p className="text-green-700 dark:text-green-400 font-semibold mb-3">
-                  ✨ Acceso completo durante tu prueba de {daysRemaining} días - Menús personalizados, seguimiento nutricional y más
-                </p>
-              </div>
-            </TabsContent>
-
-          <TabsContent value="recetas" className="mt-8">
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="mt-8 grid md:grid-cols-2 gap-6">
               <Card className="overflow-hidden">
-                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${mealPlanImage})` }} />
+                <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${recipesImage})` }} />
                 <CardHeader>
-                  <CardTitle>Biblioteca de Recetas</CardTitle>
-                  <p className="text-muted-foreground">
-                    Accede a más de 200+ recetas saludables y fáciles de preparar
-                  </p>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-accent" />
+                    Lista de Compras Inteligente
+                  </CardTitle>
+                  <CardDescription>
+                    Generación automática basada en tus menús semanales
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Recetas paso a paso con fotos</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Tiempo de preparación optimizado</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Porciones ajustables</span>
-                    </div>
-                  </div>
+                  <ul className="space-y-2 text-sm mb-4">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Organizada por categorías de supermercado
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Cantidades exactas calculadas
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Optimizada para evitar desperdicios
+                    </li>
+                  </ul>
                   <Button 
-                    className="w-full mt-4" 
-                    onClick={() => handleFeatureClick("Biblioteca de Recetas")}
-                  >
-                    Explorar Todas las Recetas
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-hidden">
-                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${recipesImage})` }} />
-                <CardHeader>
-                  <CardTitle>Lista de Compras Inteligente</CardTitle>
-                  <p className="text-muted-foreground">
-                    Generamos automáticamente tu lista de compras basada en tus menús
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Organizada por semanas</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Optimizada por categorías</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-accent" />
-                      <span className="text-sm">Cantidades exactas</span>
-                    </div>
-                  </div>
-                  <Button 
-                    className="w-full mt-4" 
+                    className="w-full" 
                     onClick={() => handleFeatureClick("Lista de Compras Inteligente")}
                   >
                     Generar Mi Lista
                   </Button>
                 </CardContent>
               </Card>
+
+              <Card className="overflow-hidden">
+                <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${mealPlanImage})` }} />
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Play className="w-5 h-5 text-accent" />
+                    Video-Tutoriales
+                  </CardTitle>
+                  <CardDescription>
+                    Aprende técnicas de cocina saludable
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm mb-4">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Tutoriales paso a paso en video
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Tips de nutricionistas profesionales
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                      Técnicas de preparación avanzadas
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleFeatureClick("Video-Tutoriales")}
+                  >
+                    Ver Tutoriales
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
 
-              <div className="text-center mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <p className="text-green-700 dark:text-green-400 font-semibold">
-                  📚 Acceso completo a video-tutoriales y tips de preparación incluidos en tu prueba
+            <div className="text-center mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
+              <p className="text-purple-700 dark:text-purple-400 font-semibold">
+                👨‍🍳 Nuevas recetas premium agregadas cada semana - {recipes.length}+ recetas disponibles
+              </p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analisis" className="mt-8">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Distribución de Macronutrientes</CardTitle>
+                  <CardDescription>Balance ideal para tus objetivos</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie
+                          data={macrosData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, value }) => `${name}: ${value}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {macrosData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-semibold">Proteínas</span>
+                          <span className="text-sm text-muted-foreground">135g (30%)</span>
+                        </div>
+                        <Progress value={30} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-semibold">Carbohidratos</span>
+                          <span className="text-sm text-muted-foreground">203g (45%)</span>
+                        </div>
+                        <Progress value={45} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-semibold">Grasas</span>
+                          <span className="text-sm text-muted-foreground">50g (25%)</span>
+                        </div>
+                        <Progress value={25} className="h-2" />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Apple className="w-4 h-4 text-accent" />
+                      Calidad Nutricional
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-primary mb-2">92/100</div>
+                    <Progress value={92} className="h-2 mb-2" />
+                    <p className="text-xs text-muted-foreground">Excelente balance nutricional</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-accent" />
+                      Variedad de Alimentos
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-primary mb-2">45</div>
+                    <p className="text-xs text-muted-foreground">Alimentos diferentes esta semana</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-accent" />
+                      Hidratación
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-primary mb-2">2.1L</div>
+                    <Progress value={84} className="h-2 mb-2" />
+                    <p className="text-xs text-muted-foreground">84% del objetivo diario</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Micronutrientes Destacados</CardTitle>
+                  <CardDescription>Vitaminas y minerales esenciales</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Vitamina C</span>
+                          <span className="text-sm text-muted-foreground">120% VD</span>
+                        </div>
+                        <Progress value={100} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Hierro</span>
+                          <span className="text-sm text-muted-foreground">95% VD</span>
+                        </div>
+                        <Progress value={95} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Calcio</span>
+                          <span className="text-sm text-muted-foreground">88% VD</span>
+                        </div>
+                        <Progress value={88} className="h-2" />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Vitamina D</span>
+                          <span className="text-sm text-muted-foreground">78% VD</span>
+                        </div>
+                        <Progress value={78} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Omega-3</span>
+                          <span className="text-sm text-muted-foreground">110% VD</span>
+                        </div>
+                        <Progress value={100} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm">Fibra</span>
+                          <span className="text-sm text-muted-foreground">92% VD</span>
+                        </div>
+                        <Progress value={92} className="h-2" />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-4">VD = Valor Diario recomendado</p>
+                </CardContent>
+              </Card>
+
+              <div className="text-center p-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
+                <p className="text-amber-700 dark:text-amber-400 font-semibold">
+                  🔬 Análisis nutricional detallado actualizado automáticamente con cada comida registrada
                 </p>
               </div>
-            </TabsContent>
+            </div>
+          </TabsContent>
 
             <TabsContent value="consulta" className="mt-8">
               <div className="max-w-4xl mx-auto">
