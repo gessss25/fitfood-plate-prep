@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = "573113731441"; // Formato internacional con código de país
+const WHATSAPP_NUMBER = "573222386414"; // Formato internacional con código de país
 
 export const openWhatsApp = (message: string) => {
   const encodedMessage = encodeURIComponent(message);
