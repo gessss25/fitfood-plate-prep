@@ -1,56 +1,62 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { openWhatsApp } from "@/lib/whatsapp";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
+
+interface Plan {
+  id: string;
+  name: string;
+  price: number | null;
+  description: string | null;
+  features: string[] | null;
+  popular?: boolean;
+}
 
 const FeaturedPlans = () => {
-  const plans = [
-    {
-      name: "Plan Básico",
-      price: "$65.000",
-      period: "/mes",
-      description: "Perfecto para empezar tu journey saludable",
-      features: [
-        "3 comidas personalizadas",
-        "Recetas semanales", 
-        "Lista de compras",
-        "Soporte por email"
-      ],
-      popular: false,
-      color: "bg-card"
-    },
-    {
-      name: "Plan Premium",
-      price: "$119.000", 
-      period: "/mes",
-      description: "La opción más completa para resultados óptimos",
-      features: [
-        "5 comidas personalizadas",
-        "Snacks saludables incluidos",
-        "Consultas con nutricionista",
-        "Delivery 2 veces/semana",
-        "App móvil premium",
-        "Fisioterapeutas deportivos"
-      ],
-      popular: true,
-      color: "bg-gradient-primary"
-    },
-    {
-      name: "Plan Familiar",
-      price: "$199.000",
-      period: "/mes", 
-      description: "Alimentación saludable para toda la familia",
-      features: [
-        "Planes para 4 personas",
-        "Menús adaptados por edades",
-        "Recetas familiares",
-        "Delivery familiar",
-        "Educación nutricional"
-      ],
-      popular: false,
-      color: "bg-card"
+  const navigate = useNavigate();
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('meal_plans')
+        .select('*')
+        .order('price', { ascending: true })
+        .limit(3);
+
+      if (error) throw error;
+      
+      // Mark middle plan as popular
+      const plansWithPopular = (data || []).map((plan, index) => ({
+        ...plan,
+        popular: index === 1 && data.length === 3
+      }));
+      
+      setPlans(plansWithPopular);
+    } catch (error) {
+      console.error('Error loading plans:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <section id="planes" className="py-20 bg-background">
+        <div className="container mx-auto px-4 flex justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="planes" className="py-20 bg-background">
@@ -65,9 +71,9 @@ const FeaturedPlans = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <Card 
-              key={index} 
+              key={plan.id} 
               className={`relative border-none shadow-medium hover:shadow-strong transition-all duration-300 hover:-translate-y-2 ${
                 plan.popular ? 'ring-2 ring-primary scale-105' : ''
               }`}
@@ -78,12 +84,14 @@ const FeaturedPlans = () => {
                 </Badge>
               )}
               
-              <CardHeader className={`${plan.color} ${plan.popular ? 'text-white' : ''} rounded-t-lg`}>
+              <CardHeader className={`${plan.popular ? 'bg-gradient-primary text-white' : 'bg-card'} rounded-t-lg`}>
                 <CardTitle className="text-center">
                   <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                   <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-lg opacity-80">{plan.period}</span>
+                    <span className="text-4xl font-bold">
+                      ${plan.price?.toLocaleString('es-CO') || '0'}
+                    </span>
+                    <span className="text-lg opacity-80">/mes</span>
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -91,14 +99,16 @@ const FeaturedPlans = () => {
               <CardContent className="p-6">
                 <p className="text-muted-foreground text-center mb-6">{plan.description}</p>
                 
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center">
-                      <div className="w-2 h-2 bg-success rounded-full mr-3 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {plan.features && plan.features.length > 0 && (
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center">
+                        <div className="w-2 h-2 bg-success rounded-full mr-3 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 
                 <Button 
                   className={`w-full ${
@@ -106,7 +116,7 @@ const FeaturedPlans = () => {
                       ? 'bg-gradient-primary hover:opacity-90' 
                       : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
                   }`}
-                  onClick={() => openWhatsApp(`Hola! Me interesa el ${plan.name} (${plan.price}${plan.period}). Me gustaría recibir más información.`)}
+                  onClick={() => navigate(`/checkout?plan=${plan.id}`)}
                 >
                   {plan.popular ? 'Empezar Ahora' : 'Seleccionar Plan'}
                 </Button>
