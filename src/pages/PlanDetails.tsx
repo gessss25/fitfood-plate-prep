@@ -314,7 +314,13 @@ const PlanDetails = () => {
             <div className="mt-8 space-y-4">
               <Button 
                 className="w-full bg-gradient-primary text-lg py-6"
-                onClick={() => openWhatsApp(`Hola! Quiero empezar con el ${currentPlan.name} (${formatPrice(currentPlan.price)}/mes). ¿Cómo puedo inscribirme?`)}
+                onClick={() => 
+                  navigate(
+                    `/checkout?planId=${planId}&planName=${encodeURIComponent(
+                      currentPlan.name
+                    )}&amount=${currentPlan.price}`
+                  )
+                }
               >
                 Empezar con {currentPlan.name}
               </Button>

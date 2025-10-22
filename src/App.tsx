@@ -9,6 +9,8 @@ import Services from "./pages/Services";
 import ServiceDetails from "./pages/ServiceDetails";
 import Physiotherapy from "./pages/Physiotherapy";
 import PlanDetails from "./pages/PlanDetails";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import Demo from "./pages/Demo";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/service-details" element={<ServiceDetails />} />
           <Route path="/fisioterapia" element={<Physiotherapy />} />
           <Route path="/plan-details/:planId" element={<PlanDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
