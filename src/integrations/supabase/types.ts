@@ -118,52 +118,105 @@ export type Database = {
         }
         Relationships: []
       }
+      order_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          id: string
+          notes: string | null
+          order_id: string
+          status: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          notes?: string | null
+          order_id: string
+          status: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           amount: number
+          courier_location: Json | null
+          courier_name: string | null
+          courier_phone: string | null
           created_at: string
           customer_address: string | null
           customer_email: string
           customer_name: string
           customer_phone: string
+          estimated_delivery_time: string | null
           id: string
+          order_status: string
           payment_code: string
           payment_method: string | null
           payment_status: string
           plan_id: string
           plan_name: string
+          status_updated_at: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
           amount: number
+          courier_location?: Json | null
+          courier_name?: string | null
+          courier_phone?: string | null
           created_at?: string
           customer_address?: string | null
           customer_email: string
           customer_name: string
           customer_phone: string
+          estimated_delivery_time?: string | null
           id?: string
+          order_status?: string
           payment_code: string
           payment_method?: string | null
           payment_status?: string
           plan_id: string
           plan_name: string
+          status_updated_at?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
           amount?: number
+          courier_location?: Json | null
+          courier_name?: string | null
+          courier_phone?: string | null
           created_at?: string
           customer_address?: string | null
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          estimated_delivery_time?: string | null
           id?: string
+          order_status?: string
           payment_code?: string
           payment_method?: string | null
           payment_status?: string
           plan_id?: string
           plan_name?: string
+          status_updated_at?: string | null
           updated_at?: string
           user_id?: string | null
         }
