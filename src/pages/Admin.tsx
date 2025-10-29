@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import MealPlansManager from '@/components/admin/MealPlansManager';
 import RecipesManager from '@/components/admin/RecipesManager';
 import GalleriesManager from '@/components/admin/GalleriesManager';
+import OrdersManager from '@/components/admin/OrdersManager';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -50,12 +51,17 @@ const Admin = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="plans" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs defaultValue="orders" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="orders">Pedidos</TabsTrigger>
                 <TabsTrigger value="plans">Planes de Comidas</TabsTrigger>
                 <TabsTrigger value="recipes">Recetas</TabsTrigger>
                 <TabsTrigger value="galleries">Galerías</TabsTrigger>
               </TabsList>
+
+              <TabsContent value="orders">
+                <OrdersManager />
+              </TabsContent>
 
               <TabsContent value="plans">
                 <MealPlansManager />

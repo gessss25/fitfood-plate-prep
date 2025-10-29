@@ -155,9 +155,9 @@ const OrderConfirmation = () => {
               </Button>
               <Button
                 className="flex-1"
-                onClick={() => navigate("/services")}
+                onClick={() => navigate(`/order-tracking?code=${order.payment_code}`)}
               >
-                Ver Más Planes
+                Rastrear mi Pedido
               </Button>
             </div>
           </Card>
