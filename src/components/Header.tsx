@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import AuthModal from "./AuthModal";
 import { User } from "@supabase/supabase-js";
 import { Shield, MessageCircle } from "lucide-react";
-import { openWhatsApp } from "@/lib/whatsapp";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isAdmin } = useUserRole();
@@ -44,7 +44,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => openWhatsApp('Hola! Me gustaría obtener más información sobre FitFood Online.')}
+            onClick={() => navigate('/contacto')}
             className="gap-2"
           >
             <MessageCircle className="h-4 w-4" />
