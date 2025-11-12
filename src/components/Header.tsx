@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import AuthModal from "./AuthModal";
 import { User } from "@supabase/supabase-js";
-import { Shield } from "lucide-react";
+import { Shield, MessageCircle } from "lucide-react";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const Header = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,7 +41,15 @@ const Header = () => {
           <a href="/#planes" className="text-foreground hover:text-primary transition-colors">Planes</a>
           <a href="/service-details" className="text-foreground hover:text-primary transition-colors">Servicios</a>
           <a href="/menu-del-dia" className="text-foreground hover:text-primary transition-colors">Menú del Día</a>
-          <a href="#contacto" className="text-foreground hover:text-primary transition-colors">Contacto</a>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openWhatsApp('Hola! Me gustaría obtener más información sobre FitFood Online.')}
+            className="gap-2"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Contacto
+          </Button>
         </nav>
 
         <div className="flex items-center space-x-4">

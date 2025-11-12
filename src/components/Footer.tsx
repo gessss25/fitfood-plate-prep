@@ -1,3 +1,6 @@
+import { openWhatsApp } from "@/lib/whatsapp";
+import { MessageCircle } from "lucide-react";
+
 const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground py-16">
@@ -44,7 +47,13 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Contacto</h4>
             <div className="space-y-2 text-primary-foreground/80">
               <p>📧 hola@fitfoodonline.com</p>
-              <p>📱 +57 300 123 4567</p>
+              <button 
+                onClick={() => openWhatsApp('Hola! Me gustaría obtener más información sobre FitFood Online.')}
+                className="flex items-center gap-2 hover:text-primary-foreground transition-colors"
+              >
+                <MessageCircle className="w-4 h-4" />
+                📱 +57 322 238 6414
+              </button>
               <p>📍 Valledupar, Colombia</p>
               <p>🕐 Lun-Vie: 8:00 - 17:00</p>
             </div>
