@@ -1,5 +1,6 @@
 import { openWhatsApp } from "@/lib/whatsapp";
 import { MessageCircle } from "lucide-react";
+import Logo from "./Logo";
 
 const Footer = () => {
   return (
@@ -7,11 +8,8 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-sm">F</span>
-              </div>
-              <h3 className="text-xl font-bold">FitFood Online</h3>
+            <div className="mb-4">
+              <Logo variant="light" size="sm" />
             </div>
             <p className="text-primary-foreground/80 mb-4">
               Tu partner en alimentación saludable. Transformamos vidas a través de la nutrición personalizada.

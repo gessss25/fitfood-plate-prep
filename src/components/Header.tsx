@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import AuthModal from "./AuthModal";
+import Logo from "./Logo";
 import { User } from "@supabase/supabase-js";
 import { Shield, MessageCircle } from "lucide-react";
 
@@ -30,12 +31,9 @@ const Header = () => {
   return (
     <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">F</span>
-          </div>
-          <h1 className="text-2xl font-bold text-primary">FitFood Online</h1>
-        </div>
+        <Link to="/" className="transition-transform hover:scale-105">
+          <Logo size="md" />
+        </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
           <a href="/#planes" className="text-foreground hover:text-primary transition-colors">Planes</a>
